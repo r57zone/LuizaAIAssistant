@@ -1,6 +1,6 @@
 [![EN](https://user-images.githubusercontent.com/9499881/33184537-7be87e86-d096-11e7-89bb-f3286f752bc6.png)](https://github.com/r57zone/LuizaGPTAssistant/) 
 [![RU](https://user-images.githubusercontent.com/9499881/27683795-5b0fbac6-5cd8-11e7-929c-057833e01fb1.png)](https://github.com/r57zone/LuizaGPTAssistant/blob/master/README.RU.md)
-&#8211; ← Choose language | Выберите язык
+← Choose language | Выберите язык
 
 # Luiza GPT Assistant
 A simple virtual assistant imitating your close friend, girlfriend or boyfriend, based on the [ChatGPT](https://openai.com/chatgpt) neural network and [Telegram](https://telegram.org/) messenger. You can make up the assistant with his history, tastes, add him necessary triggers. By default, it will wish you good morning, good night, write compliments and interesting facts, you can also dialog with it, ask questions, advice and learn something.
