@@ -228,7 +228,7 @@ def main():
                 command = str(data['result'][0]['message']['text'])
 
                 if debugMode == 1:
-                    print(username + ', ' + currentDateTime.strftime('%H:%M') + ': ' + command)
+                    print(chatId + ', ' username + ', ' + currentDateTime.strftime('%H:%M') + ': ' + command)
 
                 if username != masterUser and chatId != masterChatId:
                     SendMsg('Приветики 🤗, я сожалею, но я общаюсь только с моим мастер-пользователем 😍 @' + masterUser + ' 👉👈')
