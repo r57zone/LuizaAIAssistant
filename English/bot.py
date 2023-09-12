@@ -12,8 +12,8 @@ def HTTPGet(Url):
     return Source
 
 def GetGPT(messages):
-    response = openai.ChatCompletion.create(model='gpt-3.5-turbo', messages=messages)
     try:
+        response = openai.ChatCompletion.create(model='gpt-3.5-turbo', messages=messages)
         #return response.choices[0].text.strip()
         print(response['choices'][0]['message']['content'])
         return response['choices'][0]['message']['content']
@@ -228,7 +228,7 @@ def main():
                 command = str(data['result'][0]['message']['text'])
 
                 if debugMode == 1:
-                    print(chatId + ', ' username + ', ' + currentDateTime.strftime('%H:%M') + ': ' + command)
+                    print(str(chatId) + ', ', username + ', ' + currentDateTime.strftime('%H:%M') + ': ' + command)
 
                 if username != masterUser and chatId != masterChatId:
                     SendMsg('Hi there 🤗, I''m sorry but I only communicate with my master user 😍 @' + masterUser + ' 👉👈')
