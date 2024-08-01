@@ -14,7 +14,9 @@ A simple virtual assistant imitating your close friend, girlfriend or boyfriend,
 ## Setup
 ![](https://github.com/r57zone/LuizaGPTAssistant/assets/9499881/483720af-4493-4d09-9e78-137bab2230a1)
 
-### Configuring an assistant based on Llama (Groq) neural network
+Virtual Assistant supports two neural networks: Llama (free of charge, via Groq service) and ChatGPT (3 months of free use, then paid). Choose one of the services at your discretion. 
+
+### Configuring Llama based assistant (Groq)
 1. Register at [Groq](https://console.groq.com/) and [get key](https://console.groq.com/).
 2. [Create a bot](https://t.me/BotFather) in Telegram messenger, get the key, change the name and photo.
 3. Install [Python](https://www.python.org/downloads/), then run Windows Command Prompt and enter the command `pip install openai` (library to work with ChatGPT) and `pip install requests[socks]` (library to support proxies).
