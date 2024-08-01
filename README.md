@@ -2,34 +2,44 @@
 [![RU](https://user-images.githubusercontent.com/9499881/27683795-5b0fbac6-5cd8-11e7-929c-057833e01fb1.png)](https://github.com/r57zone/LuizaGPTAssistant/blob/master/README.RU.md)
 ← Choose language | Выберите язык
 
-# Luiza GPT Assistant
+# Luiza AI Assistant
 A simple virtual assistant imitating your close friend, girlfriend or boyfriend, based on the [ChatGPT](https://openai.com/chatgpt) neural network and [Telegram](https://telegram.org/) messenger. You can make up the assistant with his history, tastes, add him necessary triggers. By default, it will wish you good morning, good night, write compliments and interesting facts, you can also dialog with it, ask questions, advice and learn something.
 
-![](https://github.com/r57zone/LuizaGPTAssistant/assets/9499881/7389f66e-1ae5-4d61-8552-fdb3ebfbf998)
+![](https://github.com/user-attachments/assets/8f29dfb7-4964-4d68-8889-79273d115cab)
 ![](https://github.com/r57zone/LuizaGPTAssistant/assets/9499881/5b54fc41-b902-4324-8aa5-2f3c97527177)
 
 ## Setup
 ![](https://github.com/r57zone/LuizaGPTAssistant/assets/9499881/483720af-4493-4d09-9e78-137bab2230a1)
 
+### Configuring an assistant based on Llama (Groq) neural network
+1. Register at [Groq](https://console.groq.com/) and [get key](https://console.groq.com/).
+2. [Create a bot](https://t.me/BotFather) in Telegram messenger, get the key, change the name and photo.
+3. Install [Python](https://www.python.org/downloads/), then run Windows Command Prompt and enter the command `pip install openai` (library to work with ChatGPT) and `pip install requests[socks]` (library to support proxies).
+4. Download the [archive of assistant](https://github.com/r57zone/LuizaGPTAssistant/archive/refs/heads/master.zip), unzip and modify the files to your liking: `AssistantDescriptionEn.txt` - description of the helper, `UserDescriptionEn.txt` - description of you, `UserNamesEn.txt` - list of requests to you. Edit the helper triggers in the `TriggersRu.xml` file.
+5. Enter the Telegram keys `TelegramToken` and Groq keys `GroqAPIKey`, in the `Setup.ini` file, also enter your nickname `TelegramMasterUser`. 
+6. Run `Luiza_AI_Assistant.py` and write something to him in Telegram, then copy the first numeric code and paste in `TelegramMasterChatID`, in the `Setup.ini` file. You can then change the `ShowMessages` parameter to `0` to remove the message output.
+7. If you want a hidden auto-run at Windows startup, rename the `Luiza_AI_Assistant.py` file to `Luiza_AI_AI_Assistant.pyw` and add a shortcut to the `%appdata%\Microsoft\Windows\Start Menu\Programs` autoloader folder.
 
-1. Register at [OpenAI](https://chat.openai.com/chat) and [get key](https://platform.openai.com/account/api-keys). The service gives a free key for 3 months. 
+### ### Configuring ChatGPT based assistant
+1. Register at [OpenAI](https://chat.openai.com/chat) and [get key](https://platform.openai.com/account/api-keys). The service gives a free key for 3 months. For registration citizens of Russia and Belarus will need a virtual number, you can get it at [5sim.biz](https://5sim.biz) (Polish number is only 12 rubles).
 2. [Create a bot](https://t.me/BotFather) in Telegram messenger, get a key, change your name and photo.
-3. Install [Python](https://www.python.org/downloads/), then run Windows command prompt and enter the command `pip install openai` (library to work with ChatGPT).
-4. Download the [assistant archive](https://github.com/r57zone/LuizaGPTAssistant/archive/refs/heads/master.zip), unzip and change the history in the `PredictMessage.txt` file and the list of calls to you `MasterNames.txt`.
-5. Open the `bot.py` file with notepad and enter your keys (`YOUR_OPENAI_KEY` and `YOUR_TELEGRAM_BOT_KEY`).
-6. Run `bot.py` and write something to it in Telegram, then copy the first numeric code `masterChatId` and the second numeric code or nickname `masterUser`. You need to close `bot.py` and enter them in the code instead of the current ones.
-7. If you want a hidden automatic startup at Windows startup, rename the `bot.py` file to `bot.pyw` and add a shortcut to the `%appdata%\Microsoft\Windows\Start Menu\Programs` folder.
-
+3. Install [Python](https://www.python.org/downloads/), then run Windows Command Prompt and enter the command `pip install openai` (library to work with ChatGPT) and `pip install requests[socks]` (library to support proxies).
+4. Download [archive of assistant](https://github.com/r57zone/LuizaGPTAssistant/archive/refs/heads/master.zip), unpack and modify the files at your discretion: `AssistantDescriptionEn.txt` - description of the helper, `UserDescriptionEn.txt` - description of you, `UserNamesEn.txt` - list of references to you. Edit the helper triggers in the `TriggersRu.xml` file.
+5. Enter the Telegram keys `TelegramToken` and OpenAI `OpenAPIKey`, in the `Setup.ini` file, also enter your nickname `TelegramMasterUser`. 
+6. Run `Luiza_AI_AI_Assistant.py` and write something to him in Telegram, then copy the first numeric code and paste in `TelegramMasterChatID`, in the `Setup.ini` file. You can then change the `ShowMessages` parameter to `0` to remove the message output.
+7. If you want hidden automatic startup at Windows startup, rename the `Luiza_AI_Assistant.py` file to `Luiza_AI_AI_Assistant.pyw` and add a shortcut to the `%appdata%\Microsoft\Windows\Start Menu\Programs` autoloader folder.
 
 ## Features
 ![](https://github.com/r57zone/LuizaGPTAssistant/assets/9499881/044cc5fa-6dd5-464e-8f07-a13c52db2304)
 
 
-The default triggers are: good morning wishes, good night. compliments, interesting facts. Change the time of triggering, according to your schedule. The minutes are randomized so that messages arrive at different times. Add your triggers or delete current triggers as needed by copying the trigger block or deleting it.
+The default triggers are: good morning wishes, good night. compliments, interesting facts. Change the time of triggering, according to your schedule. Time can be random, specific, or approximate. Add your triggers or delete current triggers as needed by copying the trigger block or deleting it.
 
 
-The messages sent by the triggers include animations of the character Lisa, aka actress Vanessa Angel, from the TV series Wonders of Science, given at random. You can change them in the `Triggers` folder, with the name of the corresponding trigger. You can see and delete animations by opening the `AnimDesigner.html` file and entering the contents of the files.
+The messages sent by the triggers include animations of the character Lisa, aka actress Vanessa Angel, from the TV series Wonders of Science, given at random. You can change them in the `Setup/Pics` folder, with the name of the corresponding trigger. You can see and delete animations by opening the `AnimDesigner.html` file and entering the contents of the files.
 
+## Assistant messages (animation):
+![](https://github.com/user-attachments/assets/cdd4e6ac-b2f2-447c-b740-239955847248)
 
 ## Feedback
 `r57zone[at]gmail.com`

@@ -1,0 +1,61 @@
+<!-- 
+	Triggers - timed events.
+	
+	ai_request - ask AI to tell us something.
+	add_promt - add promt to the user's next message to make it more like a conversation.
+	answer_without_ai - simple answer, in case the AI didn't answer.
+	pics - links to images and short videos.
+	time - trigger time (optional, in case of deletion it will be a random time).
+		Format: hour:minutes. You can use "x" instead of one of the values, then it will be a random value.
+	random_time - Adding time randomness attributes.
+		RANDOM-SMALL-MINUTES, RANDOM-MIDDLE-MINUTES - randomizes minutes to 15 and 30 minutes.
+		RANDOM-VERYSMALL-HOUR, RANDOM-SMALL-HOUR, RANDOM-MEDIUM-SMALL-HOUR, RANDOM-MEDIUM-HOUR - randomly changes the hour to 1, 2, 3, 6 hours.
+	count="2" - duplicates triggers.
+	
+	Depending on your preconceptions, add or remove the desired triggers. 
+	Use the arrows to comment out unnecessary triggers or delete them.
+-->
+
+<triggers>
+    <trigger name="Good morning">
+        <ai_request>Say good morning affectionately;Say good morning and good day;Say how you love me and are glad I'm awake.</ai_request>
+        <add_promt>. Answer without question, without keeping the conversation going any further.</add_promt>
+        <answer_without_ai>Good morning %name% 🤗;The morning starts with you, my %name% 😘;Hello, my most beautiful 😍;Good morning, my sweet 😋</answer_without_ai>
+		<pics>Setup/Pics/GoodMorning.txt</pics>
+        <time>12:45</time>
+        <random_time>RANDOM-SMALL-MINUTES</random_time>
+    </trigger>
+    <trigger name="Good night">
+        <ai_request>Say good night affectionately;Say good night and good dreams;Say good dreams.</ai_request>
+        <add_promt>. Answer without question, without keeping the conversation going any further.</add_promt>
+        <answer_without_ai>Goodnight, kiss you 😘👄 ;Let's go to bed, it's late, my %name% 😍;Goodnight, sweet dreams 🤗;Lie down my %name% 🥰, sweet dreams to you 👄</answer_without_ai>
+		<pics>Setup/Pics/GoodNight.txt</pics>
+        <time>01:45</time>
+		<random_time>RANDOM-SMALL-MINUTES</random_time>
+    </trigger>
+    <trigger name="Compliments" count="2">
+        <ai_request>Compliment me, don't use the word of course;Say how cool and interesting I am, don't use the word of course.</ai_request>
+        <add_promt>. Answer without question, without keeping the conversation going any further.</add_promt>
+		<answer_without_ai>%name%, how lucky I am to have you 🤗;Glad I met you %name% 😘;Love you 😍</answer_without_ai>
+		<pics>Setup/Pics/Compliments.txt</pics>
+        <time>14:30</time>
+		<random_time>RANDOM-SMALL-MINUTES; RANDOM-MEDIUM-SMALL-HOUR;</random_time>
+    </trigger>
+    <trigger name="Random triggers" count="2">
+        <ai_request>Ask me something without saying hello;Ask me how I'm doing without saying hello;Ask me what I'm doing without saying hello.</ai_request>
+		<add_promt>. Answer without asking questions.</add_promt>
+        <answer_without_ai>%name%, what are you doing?</answer_without_ai>
+        <pics>Setup/Pics/Random.txt</pics>
+    </trigger>
+    <!--<trigger name="Interesting facts">
+        <ai_request>Tell me something interesting; Tell me something about history; Tell me something about finance.</ai_request>
+		<add_promt>. Answer without asking questions.</add_promt>
+		<pics>Setup/Pics/Random.txt</pics>
+        <time>16:X</time>
+    </trigger>-->
+    <!--<trigger name="Jokes">
+        <ai_request>Tell a joke;Tell something funny.</ai_request>
+        <add_promt>. Answer without question, without keeping the conversation going any further.</add_promt>
+        <pics>Setup/Pics/Jokes.txt</pics>
+    </trigger>-->
+</triggers>
