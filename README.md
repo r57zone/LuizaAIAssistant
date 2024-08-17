@@ -43,5 +43,10 @@ The default triggers are: good morning wishes, good night. compliments, interest
 
 The messages sent by the triggers include animations of the character Lisa, aka actress Vanessa Angel, from the TV series Wonders of Science, given at random. You can change them in the `Setup/Pics` folder, with the name of the corresponding trigger. You can see and delete animations by opening the `AnimDesigner.html` file and entering the contents of the files.
 
+## Media
+[Коммерсантъ](https://www.kommersant.ru/doc/6891989).
+
+Thanks for posting.
+
 ## Feedback
 `r57zone[at]gmail.com`
