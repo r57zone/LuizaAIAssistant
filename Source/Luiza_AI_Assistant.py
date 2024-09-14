@@ -337,6 +337,7 @@ def main():
                     messages.append({'role': 'user', 'content': command})
                     if len(messages) == messageBufferCount:
                         messages.pop(2)
+                        messages.pop(3)
           
                     msg = AIResponce(messages, aiProvider)
                     if msg != '':
@@ -380,6 +381,8 @@ def main():
                         # Some triggers may not have answer_without_ai / Некоторые триггеры могут быть без answer_without_ai
                         if msg != '':
                             SendMsg(msg)
+                            messages.append({'role': 'assistant', 'content': msg})
+                            
 
         except:
             if debugMode == 1:
