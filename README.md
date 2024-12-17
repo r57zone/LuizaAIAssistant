@@ -26,7 +26,7 @@ Virtual Assistant supports two neural networks: Llama (free of charge, via Groq 
 7. If you want a hidden auto-run at Windows startup, rename the `Luiza_AI_Assistant.py` file to `Luiza_AI_AI_Assistant.pyw` and add a shortcut to the `%appdata%\Microsoft\Windows\Start Menu\Programs` autoloader folder.
 
 ### Configuring ChatGPT based assistant
-1. Register at [OpenAI](https://chat.openai.com/chat) and [get key](https://platform.openai.com/account/api-keys). The service gives a free key for 3 months. For registration citizens of Russia and Belarus will need a virtual number, you can get it at [5sim.biz](https://5sim.biz) (Polish number is only 12 rubles).
+1. Register at [OpenAI](https://chat.openai.com/chat) and [get key](https://platform.openai.com/account/api-keys). The service gives a free key for 3 months.
 2. [Create a bot](https://t.me/BotFather) in Telegram messenger, get a key, change your name and photo.
 3. Install [Python](https://www.python.org/downloads/), then run Windows Command Prompt and enter the command `pip install openai` (library to work with ChatGPT) and `pip install requests[socks]` (library to support proxies).
 4. Download [archive of assistant](https://github.com/r57zone/LuizaGPTAssistant/archive/refs/heads/master.zip), unpack and modify the files at your discretion: `AssistantDescriptionEn.txt` - description of the helper, `UserDescriptionEn.txt` - description of you, `UserNamesEn.txt` - list of references to you. Edit the helper triggers in the `TriggersRu.xml` file.
