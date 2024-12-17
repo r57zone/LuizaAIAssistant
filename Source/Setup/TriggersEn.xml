@@ -41,6 +41,13 @@
         <time>14:30</time>
 		<random_time>RANDOM-SMALL-MINUTES; RANDOM-MEDIUM-SMALL-HOUR;</random_time>
     </trigger>
+    <trigger name="Fortune-telling">
+        <ai_request>Tell your fortune for tomorrow in Tarot style.</ai_request>
+        <add_promt>. Answer without asking questions.</add_promt>
+        <pics>Setup/Pics/Random.txt</pics>
+        <time>00:01</time>
+		<random_time>RANDOM-SMALL-MINUTES</random_time>
+    </trigger>
     <trigger name="Random triggers" count="2">
         <ai_request>Ask me something without saying hello;Ask me how I'm doing without saying hello;Ask me what I'm doing without saying hello.</ai_request>
 		<add_promt>. Answer without asking questions.</add_promt>

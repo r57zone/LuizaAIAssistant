@@ -42,7 +42,7 @@
 		<random_time>RANDOM-SMALL-MINUTES; RANDOM-MEDIUM-SMALL-HOUR;</random_time>
     </trigger>
     <trigger name="Гадание">
-        <ai_request>Погадай на завтра</ai_request>
+        <ai_request>Погадай на завтра в стиле Таро.</ai_request>
         <add_promt>. Ответь не задавая вопросов.</add_promt>
         <pics>Setup/Pics/Random.txt</pics>
         <time>00:01</time>

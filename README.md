@@ -3,7 +3,7 @@
 ← Choose language | Выберите язык
 
 # Luiza AI Assistant
-A simple virtual assistant imitating your friend, girlfriend or boyfriend, based on the neural network [ChatGPT](https://openai.com/chatgpt) or [Llama](https://llama.meta.com/) and messenger [Telegram](https://telegram.org/). You can make up the assistant with his history, tastes, add him the necessary triggers. By default, it will wish you good morning, good night, write compliments and interesting facts, you can also have dialogs with it, ask questions, advice and learn something.
+A simple virtual assistant imitating your friend, girlfriend or boyfriend, based on the neural network [ChatGPT](https://openai.com/chatgpt) or [Llama](https://llama.meta.com/) and messenger [Telegram](https://telegram.org/). You can make up the assistant with his history, tastes, add him the necessary triggers. By default, it will wish you good morning, good night, write compliments and interesting facts, you can also have dialogs with it, ask questions, advice and learn something. The assistant can memorize important events from your conversation, with the neural network automatically determining the importance of the events.
 
 ![](https://github.com/user-attachments/assets/8f29dfb7-4964-4d68-8889-79273d115cab)
 ![](https://github.com/r57zone/LuizaGPTAssistant/assets/9499881/5b54fc41-b902-4324-8aa5-2f3c97527177)

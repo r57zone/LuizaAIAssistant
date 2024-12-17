@@ -11,6 +11,9 @@ import locale
 
 groq_api_key = '' 
 proxy = '';
+UserHistory = ''
+AIHistory = ''
+tokensSize = 0
 
 def HTTPGet(Url):
     try:
@@ -74,6 +77,61 @@ def AIResponce(messages, aiProvider):
         return GPTResponce(messages)
     elif aiProvider == 1:
         return GroqResponce(messages)
+        
+def SaveHistory():
+    #print('Save history')
+    global UserHistory
+    global AIHistory
+    with open('Setup/UserHistory.txt', 'w', encoding='utf-8') as file:
+        file.write(UserHistory)
+    with open('Setup/AIHistory.txt', 'w', encoding='utf-8') as file:
+        file.write(AIHistory)
+        
+def ImportanceCheck(aiProvider, prompt, messages, message, IsUser):
+    global UserHistory, AIHistory, tokenSize
+    
+    clear_messages = [
+        {'role': 'user', 'content': prompt},
+        {'role': 'user', 'content': json.dumps(message, ensure_ascii=False)}
+    ]
+    
+    response_content = AIResponce(clear_messages, aiProvider)
+    #print('Importance Request / Запрос важности:', message)
+    #print(response_content)
+    messages_len = sum(len(msg['content']) for msg in messages)
+    #print(f"Message length / Длина сообщений: {messages_len}")
+    
+    current_date = datetime.now()
+    
+    try:
+        if response_content and response_content.startswith('True: '):
+            if IsUser:
+                UserHistory += current_date.strftime('%d.%m.%Y') + ': ' + response_content[6:] + '\n'
+                
+                # Delete old lines if limit is exceeded / Удаляем старые строки, если превышен лимит
+                while len(UserHistory) + messages_len >= tokenSize - 50:
+                    if '\n' in UserHistory:
+                        UserHistory = UserHistory.split('\n', 1)[1]
+                    else:
+                        UserHistory = ''
+                        break
+            else:  # Is AI
+                AIHistory += current_date.strftime('%d.%m.%Y') + ': ' + response_content[6:] + '\n'
+                
+                # Delete old lines if limit is exceeded / Удаляем старые строки, если превышен лимит
+                while len(AIHistory) + messages_len >= tokenSize - 50:
+                    if '\n' in AIHistory:
+                        AIHistory = AIHistory.split('\n', 1)[1]
+                    else:
+                        AIHistory = ''
+                        break
+            
+            SaveHistory()
+            
+    except json.JSONDecodeError as e:
+        print(f"Error JSONDecodeError: {e}")
+    except Exception as e:
+        print(f"Error: {e}")
     
 def readFile(filename):
     try:
@@ -81,9 +139,11 @@ def readFile(filename):
             content = file.read()
         return content
     except FileNotFoundError:
-        print('Файл не найден.')
+        #print('File not found:', filename)
+        return ''
     except Exception as e:
-        print(str(e))
+        #print(str(e))
+        return ''
         
 def randomPhrase(phrase_string):
     phrases = phrase_string.split(';')
@@ -196,8 +256,10 @@ def loadDateTriggers(triggers):
             
 def loadFileList(filename):
     return readFile(filename).strip(' \t\n\r').replace('\n', ';')
-            
+           
 def main():
+    global UserHistory, AIHistory, tokenSize
+    
     # Settings / Настройки
     userLang = locale.getlocale()[0][:2]
     
@@ -205,7 +267,7 @@ def main():
     configFile = Path('Setup/Setup.ini')
     config.read(configFile)
     # 0 - OpenAI, 1 - Groq (Llama 3)
-    aiProvider = int(config.get('Main', 'AIProvier'))
+    aiProvider = int(config.get('Main', 'AIProvider'))
     
     telegramToken = config.get('Main', 'TelegramToken')
     masterUser = config.get('Main', 'TelegramMasterUser')
@@ -214,23 +276,34 @@ def main():
     global groq_api_key, proxy
     groq_api_key = config.get('Main', 'GroqAPIKey')
     openai.api_key = config.get('Main', 'OpenAPIKey')
+    tokenSize = int(config.get('Main', 'HistoryLimit'))
     proxy = config.get('Main', 'Proxy')
     SleepTimeOut = int(config.get('Main', 'SleepTimeOut'))
     
-    if os.path.exists('Setup/AssistantDescription' + userLang + '.txt'):
-        assistantDescription = readFile('Setup/AssistantDescription' + userLang + '.txt').replace('\n', '')
+    if os.path.exists('Setup/Prompts/AssistantDescription' + userLang + '.txt'):
+        assistantDescription = readFile('Setup/Prompts/AssistantDescription' + userLang + '.txt').replace('\n', '')
     else:
-        assistantDescription = readFile('Setup/AssistantDescriptionEn.txt').replace('\n', '')
+        assistantDescription = readFile('Setup/Prompts/AssistantDescriptionEn.txt').replace('\n', '')
     
-    if os.path.exists('Setup/UserDescription' + userLang + '.txt'):
-        userDescription = readFile('Setup/UserDescription' + userLang + '.txt').replace('\n', '')
+    if os.path.exists('Setup/Prompts/UserDescription' + userLang + '.txt'):
+        userDescription = readFile('Setup/Prompts/UserDescription' + userLang + '.txt').replace('\n', '')
     else:
-        userDescription = readFile('Setup/UserDescriptionEn.txt').replace('\n', '')
+        userDescription = readFile('Setup/Prompts/UserDescriptionEn.txt').replace('\n', '')
     
     if os.path.exists('Setup/UserNames' + userLang + '.txt'):
         userNames = loadFileList('Setup/UserNames' + userLang + '.txt')
     else:
         userNames = loadFileList('Setup/UserNamesEn.txt')
+        
+    if os.path.exists('Setup/Prompts/HistoryUserPrompt' + userLang + '.txt'):
+        HistoryUserPrompt = loadFileList('Setup/Prompts/HistoryUserPrompt' + userLang + '.txt')
+    else:
+        HistoryUserPrompt = loadFileList('Setup/Prompts/HistoryUserPromptEn.txt')
+        
+    if os.path.exists('Setup/Prompts/HistoryAIPrompt' + userLang + '.txt'):
+        HistoryAIPrompt = loadFileList('Setup/Prompts/HistoryAIPrompt' + userLang + '.txt')
+    else:
+        HistoryAIPrompt = loadFileList('Setup/Prompts/HistoryAIPromptEn.txt')
     
     showMsgs = int(config.get('Main', 'ShowMessages'))
     debugMode = int(config.get('Main', 'DebugMode'))
@@ -250,8 +323,15 @@ def main():
     messages = []
     messages.append({'role': 'assistant', 'content': assistantDescription.strip('\t\n\r')})
     messages.append({'role': 'user', 'content': userDescription.strip('\t\n\r')})
-    messageCount = 0
-    messageBufferCount = 10
+    
+    # History / История
+    UserHistory = readFile('Setup/UserHistory.txt')
+    for line in UserHistory.strip().split('\n'):
+        messages.append({'role': 'assistant', 'content': line.strip()})
+    AIHistory = readFile('Setup/AIHistory.txt')
+    for line in AIHistory.strip().split('\n'):
+        messages.append({'role': 'user', 'content': line.strip()})
+
     addPromtToNextUserMsg = ''
     
     # Triggers / Триггеры
@@ -324,7 +404,7 @@ def main():
                     continue
                     
                 # Answering simple commands / Отвечаем на простые команды
-                if (command == 'work'):
+                if command == 'work' or command == '/work':
                     standardCommand = True
                     # SendPicAnim('https://i.imgur.com/UW2gs2C.mp4')
                     SendMsg(workTestMsg)
@@ -335,13 +415,24 @@ def main():
                         addPromtToNextUserMsg = ''
                     
                     messages.append({'role': 'user', 'content': command})
-                    if len(messages) == messageBufferCount:
+                    
+                    # Checking the importance of a user's message / Проверка важности сообщения пользователя
+                    ImportanceCheck(aiProvider, HistoryUserPrompt, messages, command, True)
+                    
+                    if sum(len(msg['content']) for msg in messages) > tokenSize - 50:
                         messages.pop(2)
                         messages.pop(3)
           
+                    # AI answer / Ответ AI
                     msg = AIResponce(messages, aiProvider)
+                    
                     if msg != '':
                         SendMsg(msg)
+                        
+                        # AI Response Importance Check / Проверка важности ответа AI
+                        ImportanceCheck(aiProvider, HistoryAIPrompt, messages, msg, False)
+                        
+                        messages.append({'role': 'assistant', 'content': msg})
                     elif debugMode == 1:
                         print('Error receiving data from AI')
 
@@ -382,12 +473,12 @@ def main():
                         if msg != '':
                             SendMsg(msg)
                             messages.append({'role': 'assistant', 'content': msg})
-                            
+                        
 
         except:
             if debugMode == 1:
                 print('Update fail')
-            #pass
+            pass
 
 if __name__=='__main__':
 	main()
