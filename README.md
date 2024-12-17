@@ -21,7 +21,7 @@ Virtual Assistant supports two neural networks: Llama (free of charge, via Groq 
 2. [Create a bot](https://t.me/BotFather) in Telegram messenger, get the key, change the name and photo.
 3. Install [Python](https://www.python.org/downloads/), then run Windows Command Prompt and enter the command `pip install openai` (library to work with ChatGPT) and `pip install requests[socks]` (library to support proxies).
 4. Download the [archive of assistant](https://github.com/r57zone/LuizaGPTAssistant/archive/refs/heads/master.zip), unzip and modify the files to your liking: `AssistantDescriptionEn.txt` - description of the helper, `UserDescriptionEn.txt` - description of you, `UserNamesEn.txt` - list of requests to you. Edit the helper triggers in the `TriggersRu.xml` file.
-5. Enter the Telegram keys `TelegramToken` and Groq keys `GroqAPIKey`, in the `Setup.ini` file, also enter your nickname `TelegramMasterUser`. 
+5. Enter the Telegram keys `TelegramToken` and Groq keys `GroqAPIKey`, in the `Setup.ini` file, change `AIProvider` to `1`, also enter your nickname `TelegramMasterUser`. 
 6. Run `Luiza_AI_Assistant.py` and write something to him in Telegram, then copy the first numeric code and paste in `TelegramMasterChatID`, in the `Setup.ini` file. You can then change the `ShowMessages` parameter to `0` to remove the message output.
 7. If you want a hidden auto-run at Windows startup, rename the `Luiza_AI_Assistant.py` file to `Luiza_AI_AI_Assistant.pyw` and add a shortcut to the `%appdata%\Microsoft\Windows\Start Menu\Programs` autoloader folder.
 

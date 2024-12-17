@@ -21,7 +21,7 @@
 3. [Создайте бота](https://t.me/BotFather) в мессенджере Telegram, получите ключ, измените имя и фото.
 4. Установите [Python](https://www.python.org/downloads/), после чего запустите командную строку Windows и введите команду `pip install openai` (библиотека для работы с ChatGPT) и `pip install requests[socks]` (библиотека для поддержки прокси).
 5. Загрузите [архив с помощником](https://github.com/r57zone/LuizaGPTAssistant/archive/refs/heads/master.zip), распакуйте и измените файлы на свое усмотрение: `AssistantDescriptionRu.txt` - описание помощника, `UserDescriptionRu.txt` - описание вас, `UserNamesRu.txt` - список обращений к вам. Отредактируйте триггеры помощника в файле `TriggersRu.xml`.
-6. Введите ключи Telegram `TelegramToken` и Groq `GroqAPIKey`, в файл `Setup.ini`, также введите ваш никнейм `TelegramMasterUser`. 
+6. Введите ключи Telegram `TelegramToken` и Groq `GroqAPIKey`, в файл `Setup.ini`, измените `AIProvider` на `1`, также введите ваш никнейм `TelegramMasterUser`. 
 7. Запустите `Luiza_AI_Assistant.py` и напишите что-нибудь ему в Telegram, после чего скопируйте первый числовой код и вставьте в `TelegramMasterChatID`, в файл `Setup.ini`. После чего можно изменить параметр `ShowMessages` на `0`, чтобы убрать вывод сообщений.
 8. К сожалению, сервис блокирует запросы с российских и белоруских адресов, поэтому необходимо использовать socks5 прокси или VPN. Если у вас есть прокси, то введите её в параметр `Proxy`, в файл `Setup.ini`. Можно где-то развернуть ShadowSocks прокси.
 9. При необходимости скрытого автоматического запуска при старте Windows, переименуйте файл `Luiza_AI_Assistant.py` в `Luiza_AI_Assistant.pyw` и добавьте ярлык в папку автозагрузки `%appdata%\Microsoft\Windows\Start Menu\Programs`.
