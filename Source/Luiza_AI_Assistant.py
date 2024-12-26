@@ -36,7 +36,7 @@ def GroqResponce(messages):
         'Content-Type': 'application/json'
     }
     data = {
-        "model": "llama-3.1-70b-versatile",  # Model name
+        "model": "llama-3.3-70b-versatile",  # Model name
         "messages": messages,
         "temperature": 0.5  # Desired temperature
     }
