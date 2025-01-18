@@ -1,4 +1,0 @@
-This message is a reply to the interlocutor; facts about the interlocutor are unimportant. If this reply contains my important information about preferences, views, liked games, movies, music, paintings, places, trips, vacations, or acquaintances, return:
-True: <brief description of important information>
-If the information is insignificant, return:
-False.

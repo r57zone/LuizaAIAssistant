@@ -9,11 +9,11 @@ import locale
 # pip install openai
 # pip install requests[socks] (for proxy / для прокси)
 
-groq_api_key = '' 
-proxy = '';
+GroqAPIKey = '' 
+Proxy = '';
 UserHistory = ''
 AIHistory = ''
-tokensSize = 0
+TokensSize = 0
 
 def HTTPGet(Url):
     try:
@@ -25,14 +25,14 @@ def HTTPGet(Url):
     return Source
     
 def GroqResponce(messages):
-    if proxy:
+    if Proxy:
             proxies = {
-                'http': proxy,
-                'https': proxy
+                'http': Proxy,
+                'https': Proxy
             }
     
     headers = {
-        'Authorization': 'Bearer ' + groq_api_key,
+        'Authorization': 'Bearer ' + GroqAPIKey,
         'Content-Type': 'application/json'
     }
     data = {
@@ -42,7 +42,7 @@ def GroqResponce(messages):
     }
 
     try:
-        if proxy:
+        if Proxy:
             response = requests.post('https://api.groq.com/openai/v1/chat/completions', json=data, headers=headers, proxies=proxies)
         else:
             response = requests.post('https://api.groq.com/openai/v1/chat/completions', json=data, headers=headers)
@@ -60,8 +60,8 @@ def GroqResponce(messages):
             #print(response.text)
             return ''
     except Exception as e:
-        print('An error occurred:', e)
-        return ''
+        #print('An error occurred:', e)
+        return 'AI provider returned an error.'
         
 def GPTResponce(messages):
     try:
@@ -70,12 +70,12 @@ def GPTResponce(messages):
         #print(response['choices'][0]['message']['content'])
         return response['choices'][0]['message']['content']
     except:
-        return ''
+        return 'AI provider returned an error.'
         
-def AIResponce(messages, aiProvider):
-    if aiProvider == 0:
+def AIResponse(AIProvider, messages):
+    if AIProvider == 0:
         return GPTResponce(messages)
-    elif aiProvider == 1:
+    elif AIProvider == 1:
         return GroqResponce(messages)
         
 def SaveHistory():
@@ -87,15 +87,16 @@ def SaveHistory():
     with open('Setup/AIHistory.txt', 'w', encoding='utf-8') as file:
         file.write(AIHistory)
         
-def ImportanceCheck(aiProvider, prompt, messages, message, IsUser):
-    global UserHistory, AIHistory, tokenSize
+def ImportanceCheck(AIProvider, prompt, messages, message, IsUser):
+    global UserHistory, AIHistory, TokensSize
     
-    clear_messages = [
+    ClearMessages = [
         {'role': 'user', 'content': prompt},
         {'role': 'user', 'content': json.dumps(message, ensure_ascii=False)}
     ]
+    # ClearMessages = Messages + [{'role': 'user', 'content': Prompt}]
     
-    response_content = AIResponce(clear_messages, aiProvider)
+    response_content = AIResponse(AIProvider, ClearMessages)
     #print('Importance Request / Запрос важности:', message)
     #print(response_content)
     messages_len = sum(len(msg['content']) for msg in messages)
@@ -109,7 +110,7 @@ def ImportanceCheck(aiProvider, prompt, messages, message, IsUser):
                 UserHistory += current_date.strftime('%d.%m.%Y') + ': ' + response_content[6:] + '\n'
                 
                 # Delete old lines if limit is exceeded / Удаляем старые строки, если превышен лимит
-                while len(UserHistory) + messages_len >= tokenSize - 50:
+                while len(UserHistory) + messages_len >= TokensSize - 50:
                     if '\n' in UserHistory:
                         UserHistory = UserHistory.split('\n', 1)[1]
                     else:
@@ -119,7 +120,7 @@ def ImportanceCheck(aiProvider, prompt, messages, message, IsUser):
                 AIHistory += current_date.strftime('%d.%m.%Y') + ': ' + response_content[6:] + '\n'
                 
                 # Delete old lines if limit is exceeded / Удаляем старые строки, если превышен лимит
-                while len(AIHistory) + messages_len >= tokenSize - 50:
+                while len(AIHistory) + messages_len >= TokensSize - 50:
                     if '\n' in AIHistory:
                         AIHistory = AIHistory.split('\n', 1)[1]
                     else:
@@ -132,8 +133,22 @@ def ImportanceCheck(aiProvider, prompt, messages, message, IsUser):
         print(f"Error JSONDecodeError: {e}")
     except Exception as e:
         print(f"Error: {e}")
+        
+def ResponseNeed(AIProvider, Messages, Prompt):
+    ClearMessages = Messages + [{'role': 'user', 'content': Prompt}]
+    ResponseContent = AIResponse(AIProvider, ClearMessages)
+    try:
+        if ResponseContent:
+            if 'True' in ResponseContent:
+                return True
+            else:
+                return False
+        else:
+            return True
+    except:
+        return True
     
-def readFile(filename):
+def ReadFile(filename):
     try:
         with open(filename, 'r', encoding='utf-8') as file:
             content = file.read()
@@ -145,104 +160,114 @@ def readFile(filename):
         #print(str(e))
         return ''
         
-def randomPhrase(phrase_string):
+def LoadFileList(filename):
+    return ReadFile(filename).strip(' \t\n\r').replace('\n', ';')
+        
+def RandomPhrase(phrase_string):
     phrases = phrase_string.split(';')
     random_phrase = random.choice(phrases)
     return random_phrase.strip()
     
 class Trigger:
     def __init__(self):
-        self.name = ''
-        self.completed = 0
-        self.hours = 0
-        self.minutes = 0
-        self.answer_without_ai = ''
-        self.ai_request = ''
-        self.add_promt_next_user_msg = ''
-        self.pics = []
+        self.Name = ''
+        self.Activate = True
+        self.LastShownDay = 0
+        self.Hours = 0
+        self.Minutes = 0
+        self.AnswerWithoutAI = ''
+        self.AIRequest = ''
+        self.AddPromptNextUserMsg = ''
+        self.Pics = []
         
     def setTime(self, time):
         if time != 'X':
             split_time = time.split(':')
             if split_time[0] != 'X': 
-                self.hours = int(split_time[0])
+                self.Hours = int(split_time[0])
             else:
-                self.hours = random.randint(0, 23)
+                self.Hours = random.randint(0, 23)
                 
             if split_time[1] != 'X': 
-                self.minutes = int(split_time[1])
+                self.Minutes = int(split_time[1])
             else:
-               self.minutes = random.randint(0, 59)
+               self.Minutes = random.randint(0, 59)
         else:
-            self.hours = random.randint(0, 23)
-            self.minutes = random.randint(0, 59)
+            self.Hours = random.randint(0, 23)
+            self.Minutes = random.randint(0, 59)
             
     def randTime(self, values):
         if 'RANDOM-SMALL-MINUTES' in values:
-            self.minutes = max(0, min(59, self.minutes + random.randint(-15, 15)))
+            self.Minutes = max(0, min(59, self.Minutes + random.randint(-15, 15)))
         if 'RANDOM-MIDDLE-MINUTES' in values:
-            self.minutes = max(0, min(59, self.minutes + random.randint(-30, 30)))
+            self.Minutes = max(0, min(59, self.Minutes + random.randint(-30, 30)))
         if 'RANDOM-VERYSMALL-HOUR' in values:
-            self.hours = max(0, min(23, self.hours + random.randint(-1, 1)))
+            self.Hours = max(0, min(23, self.Hours + random.randint(-1, 1)))
         if 'RANDOM-SMALL-HOUR' in values:
-            self.hours = max(0, min(23, self.hours + random.randint(-2, 2)))
+            self.Hours = max(0, min(23, self.Hours + random.randint(-2, 2)))
         if 'RANDOM-MEDIUM-SMALL-HOUR' in values:
-            self.hours = max(0, min(23, self.hours + random.randint(-3, 3)))
+            self.Hours = max(0, min(23, self.Hours + random.randint(-3, 3)))
         if 'RANDOM-MEDIUM-HOUR' in values:
-            self.hours = max(0, min(23, self.hours + random.randint(-6, 6)))
+            self.Hours = max(0, min(23, self.Hours + random.randint(-6, 6)))
             
-def loadTriggers(filename):
+def LoadTriggers(filename):
     tree = ET.parse(filename)
     root = tree.getroot()
 
     triggers = []
 
-    for trigger_elem in root.findall('trigger'):
+    for trigger_elem in root.findall('Trigger'):
         # Number of duplicates / Количество повторений
-        count = int(trigger_elem.get('count', '1'))  # По умолчанию 1, если атрибут отсутствует
-
+        Count = int(trigger_elem.get('Count', '1'))  # Defaults to 1 if attribute is missing / По умолчанию 1, если атрибут отсутствует
+        RandomActivate = int(trigger_elem.get('RandomActivate', '0'))  # Defaults to 0 if attribute is missing / По умолчанию 0, если атрибут отсутствует
+        
         # Add the trigger the required number of times / Добавляем триггер нужное количество раз
-        for _ in range(count):
+        for _ in range(Count):
+
             trigger = Trigger()
-            trigger.name = trigger_elem.get('name', '')
-            trigger.ai_request = trigger_elem.find('ai_request').text
+            trigger.Name = trigger_elem.get('Name', '')
+            
+            if RandomActivate == 1: # Change only if enabled / Изменяем только если включено
+                trigger.Activate = random.randint(0, 1) == 1
+                
+            trigger.AIRequest = trigger_elem.find('AIRequest').text
             
             # Promt / Промт
-            add_promt_item = trigger_elem.find('add_promt')
-            if add_promt_item is not None and add_promt_item.text:
-                trigger.add_promt_next_user_msg = add_promt_item.text
+            AddPromptItem = trigger_elem.find('AddPrompt')
+            if AddPromptItem is not None and AddPromptItem.text:
+                trigger.AddPromptNextUserMsg = AddPromptItem.text
             
             # The answer without AI / Ответ без AI
-            answer_without_ai_elem = trigger_elem.find('answer_without_ai')
-            if answer_without_ai_elem is not None and answer_without_ai_elem.text:
-                trigger.answer_without_ai = answer_without_ai_elem.text
+            AnswerWithoutAI_elem = trigger_elem.find('AnswerWithoutAI')
+            if AnswerWithoutAI_elem is not None and AnswerWithoutAI_elem.text:
+                trigger.AnswerWithoutAI = AnswerWithoutAI_elem.text
             
             # Images / Изображения
-            trigger.pics = loadFileList(trigger_elem.find('pics').text)
+            trigger.Pics = LoadFileList(trigger_elem.find('Pics').text)
             
             # Time
-            time_elem = trigger_elem.find('time')
+            time_elem = trigger_elem.find('Time')
             if time_elem is not None and time_elem.text:
                 trigger.setTime(time_elem.text)
             else:
                 trigger.setTime('X:X')
             
             # Attributes of randomness / Атрибуты случайности
-            random_time_elem = trigger_elem.find('random_time')
+            random_time_elem = trigger_elem.find('RandomTime')
             if random_time_elem is not None and random_time_elem.text:
                 trigger.randTime(random_time_elem.text)
             triggers.append(trigger)
             
     return triggers
     
-def saveDateTriggers(triggers):
+def SaveDateTriggers(triggers):
     with open('Setup/DateTriggers.txt', 'w') as file:
         Str = ''
         for trigger in triggers:
-            Str += str(trigger.completed) + ';'
+            Str += str(trigger.LastShownDay) + ';'
         file.write(Str + '\n')
         
-def loadDateTriggers(triggers):
+def LoadDateTriggers(triggers):
     with open('Setup/DateTriggers.txt', 'r') as file:
         line = file.readline().strip()
         values = line.split(';')
@@ -252,231 +277,288 @@ def loadDateTriggers(triggers):
                 continue
             if i > lenTriggers - 1:
                 break
-            triggers[i].completed = int(values[i])
+            triggers[i].LastShownDay = int(values[i])
             
-def loadFileList(filename):
-    return readFile(filename).strip(' \t\n\r').replace('\n', ';')
+def LoadPromptsXML(filename):
+    try:
+        tree = ET.parse(filename)
+        root = tree.getroot()
+        prompts = {}
+        for element in root:
+            if element.text:
+                prompts[element.tag] = element.text.strip().replace('\t', '')
+            else:
+                prompts[element.tag] = ''
+        tree = None
+        return prompts
+    except Exception as e:
+        #print(f"File not found: {filename}: {e}")
+        return {}
            
 def main():
-    global UserHistory, AIHistory, tokenSize
+    global UserHistory, AIHistory, TokensSize
     
     # Settings / Настройки
-    userLang = locale.getlocale()[0][:2]
+    UserLang = locale.getlocale()[0][:2]
     
-    config = configparser.ConfigParser()
-    configFile = Path('Setup/Setup.ini')
-    config.read(configFile)
+    Config = configparser.ConfigParser()
+    ConfigFile = Path('Setup/Setup.ini')
+    Config.read(ConfigFile)
     # 0 - OpenAI, 1 - Groq (Llama 3)
-    aiProvider = int(config.get('Main', 'AIProvider'))
+    AIProvider = int(Config.get('Main', 'AIProvider'))
     
-    telegramToken = config.get('Main', 'TelegramToken')
-    masterUser = config.get('Main', 'TelegramMasterUser')
-    masterChatId = int(config.get('Main', 'TelegramMasterChatID'))
+    TelegramToken = Config.get('Main', 'TelegramToken')
+    MasterChatId = int(Config.get('Main', 'TelegramMasterChatId'))
     
-    global groq_api_key, proxy
-    groq_api_key = config.get('Main', 'GroqAPIKey')
-    openai.api_key = config.get('Main', 'OpenAPIKey')
-    tokenSize = int(config.get('Main', 'HistoryLimit'))
-    proxy = config.get('Main', 'Proxy')
-    SleepTimeOut = int(config.get('Main', 'SleepTimeOut'))
+    global GroqAPIKey, Proxy
+    FirstRun = int(Config.get('Main', 'FirstRun')) == 1
+    GroqAPIKey = Config.get('Main', 'GroqAPIKey')
+    openai.api_key = Config.get('Main', 'OpenAPIKey')
+    TokensSize = int(Config.get('Main', 'HistoryLimit'))
+    Proxy = Config.get('Main', 'Proxy')
+    SleepTimeOut = int(Config.get('Main', 'SleepTimeOut')) / 1000
     
-    if os.path.exists('Setup/Prompts/AssistantDescription' + userLang + '.txt'):
-        assistantDescription = readFile('Setup/Prompts/AssistantDescription' + userLang + '.txt').replace('\n', '')
+    # Prompts / Подсказки
+    if os.path.exists('Setup/Prompts' + UserLang + '.xml'):
+        Prompts = LoadPromptsXML('Setup/Prompts' + UserLang + '.xml')
     else:
-        assistantDescription = readFile('Setup/Prompts/AssistantDescriptionEn.txt').replace('\n', '')
+        Prompts = LoadPromptsXML('Setup/PromptsEn.xml')
     
-    if os.path.exists('Setup/Prompts/UserDescription' + userLang + '.txt'):
-        userDescription = readFile('Setup/Prompts/UserDescription' + userLang + '.txt').replace('\n', '')
-    else:
-        userDescription = readFile('Setup/Prompts/UserDescriptionEn.txt').replace('\n', '')
+    AssistantDescription = Prompts.get('AssistantDescription', '')
+    UserDescription = Prompts.get('UserDescription', '')
+    UserNames = Prompts.get('UserNames', '')
     
-    if os.path.exists('Setup/UserNames' + userLang + '.txt'):
-        userNames = loadFileList('Setup/UserNames' + userLang + '.txt')
-    else:
-        userNames = loadFileList('Setup/UserNamesEn.txt')
-        
-    if os.path.exists('Setup/Prompts/HistoryUserPrompt' + userLang + '.txt'):
-        HistoryUserPrompt = loadFileList('Setup/Prompts/HistoryUserPrompt' + userLang + '.txt')
-    else:
-        HistoryUserPrompt = loadFileList('Setup/Prompts/HistoryUserPromptEn.txt')
-        
-    if os.path.exists('Setup/Prompts/HistoryAIPrompt' + userLang + '.txt'):
-        HistoryAIPrompt = loadFileList('Setup/Prompts/HistoryAIPrompt' + userLang + '.txt')
-    else:
-        HistoryAIPrompt = loadFileList('Setup/Prompts/HistoryAIPromptEn.txt')
+    HistoryUserPrompt = Prompts.get('HistoryUserPrompt', '')
+    HistoryAIPrompt = Prompts.get('HistoryAIPrompt', '')
     
-    showMsgs = int(config.get('Main', 'ShowMessages'))
-    debugMode = int(config.get('Main', 'DebugMode'))
-    sendImgs = int(config.get('Main', 'SendImages'))
+    ResponseNeedPromt = Prompts.get('ResponseNeedPromt', '')
+     
+    ShowMsgs = int(Config.get('Main', 'ShowMessages')) == 1
+    DebugMode = int(Config.get('Main', 'DebugMode')) == 1
+    SendImgs = int(Config.get('Main', 'SendImages')) == 1
     
-    accessErrorMsg = 'Hi 🤗, I''m sorry but I only communicate with my master user 😍 @' + masterUser + ' 👉👈'
-    workTestMsg = 'Everything is ok, I''m here 😘'
-    if userLang == 'Ru':
-        accessErrorMsg = 'Приветики 🤗, я сожалею, но я общаюсь только с моим мастер-пользователем 😍 @' + masterUser + ' 👉👈'
-        workTestMsg = 'Всё ок, я тут 😘'
+    if False:
+        print('AssistantDescription:', AssistantDescription)
+        print('')
+        print('UserDescription:', UserDescription)
+        print('')
+        print('UserNames:', UserNames)
+        print('')
+        print('HistoryUserPrompt:', HistoryUserPrompt)
+        print('')
+        print('HistoryAIPrompt:', HistoryAIPrompt)
+        print('')
+        exit()
+    
+    # Static answers / Статичные ответы
+    
+    AccessErrorAnswer = 'Hi 🤗, I''m sorry but I only communicate with my master user 😍 👉👈'
+    WorkTestAnswer = 'Everything is ok, I''m here 😘'
+    if UserLang == 'Ru':
+        AccessErrorAnswer = 'Приветики 🤗, я сожалею, но я общаюсь только с моим мастер-пользователем 😍 👉👈'
+        WorkTestAnswer = 'Всё ок, я тут 😘'
     
     ################################################
     
-    updateId = 0 # last message being processed / последнее сообщение в обработке
-    chatId = 0
+    UpdateId = 0 # last message being processed / последнее сообщение в обработке
+    ChatId = 0
     
     messages = []
-    messages.append({'role': 'assistant', 'content': assistantDescription.strip('\t\n\r')})
-    messages.append({'role': 'user', 'content': userDescription.strip('\t\n\r')})
+    messages.append({'role': 'assistant', 'content': AssistantDescription.strip('\t\n\r')})
+    messages.append({'role': 'user', 'content': UserDescription.strip('\t\n\r')})
     
     # History / История
-    UserHistory = readFile('Setup/UserHistory.txt')
+    UserHistory = ReadFile('Setup/UserHistory.txt')
     for line in UserHistory.strip().split('\n'):
         messages.append({'role': 'assistant', 'content': line.strip()})
-    AIHistory = readFile('Setup/AIHistory.txt')
+    AIHistory = ReadFile('Setup/AIHistory.txt')
     for line in AIHistory.strip().split('\n'):
         messages.append({'role': 'user', 'content': line.strip()})
 
-    addPromtToNextUserMsg = ''
+    AddPromptToNextUserMsg = ''
     
     # Triggers / Триггеры
-    if os.path.exists('Setup/Triggers' + userLang + '.xml'):
-        triggers = loadTriggers('Setup/Triggers' + userLang + '.xml')
+    if os.path.exists('Setup/Triggers' + UserLang + '.xml'):
+        triggers = LoadTriggers('Setup/Triggers' + UserLang + '.xml')
     else:
-        triggers = loadTriggers('Setup/TriggersEn.xml')
+        triggers = LoadTriggers('Setup/TriggersEn.xml')
           
     # Adding a name and adding randomness to the time / Добавляем имя и добавляем случайность ко времени
     for trigger in triggers:
-        trigger.answer_without_ai = trigger.answer_without_ai.replace('%name%', randomPhrase(userNames))
+        trigger.AnswerWithoutAI = trigger.AnswerWithoutAI.replace('%name%', RandomPhrase(UserNames))
     
-    loadDateTriggers(triggers)
+    LoadDateTriggers(triggers)
     
     # Checking triggers / Проверка триггеров
     if False:
         for trigger in triggers:
-            print(trigger.name, '-', str(trigger.hours) + ':' + str(trigger.minutes))
-            print('AI request:', trigger.ai_request.split(';')[0])
-            print('Answer without AI:', trigger.answer_without_ai.split(';')[0])
-            print('Pics:', trigger.pics.split(';')[0])
+            print(trigger.Name, '(' + str(trigger.Activate) + ')', '-', str(trigger.Hours) + ':' + str(trigger.Minutes))
+            print('Last Shown Day: ' + str(trigger.LastShownDay))
+            print('AI request:', trigger.AIRequest.split(';')[0])
+            print('Answer without AI:', trigger.AnswerWithoutAI.split(';')[0])
+            print('Pics:', trigger.Pics.split(';')[0])
             print()
-        input()
+        exit()
     
-    # Update updateId
+    # Update UpdateId
     try:
-        source = HTTPGet('https://api.telegram.org/bot' + telegramToken + '/getUpdates')
-        data = json.loads(source)
-        updateId = data['result'][0]['update_id']
+        Source = HTTPGet('https://api.telegram.org/bot' + TelegramToken + '/getUpdates')
+        Data = json.loads(Source)
+        if Data['result']:
+            UpdateId = Data['result'][0]['update_id']
     except:
         pass
         
-    def SendMsg(Msg):
-        HTTPGet('https://api.telegram.org/bot' + telegramToken + '/sendmessage?chat_id=' + str(chatId) + '&text=' + urllib.parse.quote(Msg) + '&parse_mode=markdown')
-        
-    def SendPic(Link):
-        HTTPGet('https://api.telegram.org/bot' + telegramToken + '/sendphoto?chat_id=' + str(chatId) + '&photo=' + urllib.parse.quote(Link))
-        
-    def SendPicAnim(Link):
-        HTTPGet('https://api.telegram.org/bot' + telegramToken + '/sendanimation?chat_id=' + str(chatId) + '&animation=' + urllib.parse.quote(Link))
-        
+    def SendMsg(Msg, Link):
+        if Link == '':
+            HTTPGet('https://api.telegram.org/bot' + TelegramToken + '/sendmessage?chat_id=' + str(ChatId) + '&text=' + urllib.parse.quote(Msg) + '&parse_mode=markdown')
+        else:
+            HTTPGet('https://api.telegram.org/bot' + TelegramToken + '/sendanimation?chat_id=' + str(ChatId) + '&animation=' + urllib.parse.quote(Link) + '&caption=' + urllib.parse.quote(Msg))
+        # HTTPGet('https://api.telegram.org/bot' + TelegramToken + '/sendphoto?chat_id=' + str(ChatId) + '&photo=' + urllib.parse.quote(Link))
+
     print('Luiza AI Assistant')
     
     while True:
         time.sleep(SleepTimeOut)
         try:
-            source = HTTPGet('https://api.telegram.org/bot' + telegramToken + '/getUpdates?offset=' + str(updateId))# + '&timeout=5')
-            data = json.loads(source)
-            username = ''
-            currentDateTime = datetime.now()
+
+            UserName = ''
+            CurrentDateTime = datetime.now()
+            ChatId = ''
+            UserMessage = ''
             
-            standardCommand = False
-            
-            if len(data['result']) > 0: # if there are messages, we process them / если есть сообщения, то обрабатываем
-                updateId = data['result'][0]['update_id']
-                updateId = updateId + 1
+            # If there are messages, we process and add them / Если есть сообщения, то обрабатываем и складываем
+            MessagesCounter = 0
+            while True:
+                time.sleep(SleepTimeOut)
                 
-                chatId = data['result'][0]['message']['chat']['id']
-                if 'username' in data['result'][0]['message']['from']:
-                    username = data['result'][0]['message']['from']['username']
+                Source = HTTPGet('https://api.telegram.org/bot' + TelegramToken + '/getUpdates?offset=' + str(UpdateId))# + '&timeout=5')
+                Data = json.loads(Source)
+                
+                if not Data['result']:
+                    break
+                UpdateId = Data['result'][0]['update_id']
+                UpdateId = UpdateId + 1
+                
+                ChatId = Data['result'][0]['message']['chat']['id']
+                if FirstRun: # Сохраняем Chat ID первый раз / Saving Chat ID for the first time
+                    Config.set('Main', 'FirstRun', '0')
+                    Config.set('Main', 'TelegramMasterChatID', str(ChatId))
+                    Config.write(ConfigFile.open('w'))
+                    MasterChatId = ChatId
+                    FirstRun = False
+                    
+                if 'username' in Data['result'][0]['message']['from']:
+                    UserName = Data['result'][0]['message']['from']['username']
                 else:
-                    username = str(chatId)
-                command = str(data['result'][0]['message']['text'])
-
-                if showMsgs == 1:
-                    print(str(chatId) + ', ', username + ', ' + currentDateTime.strftime('%H:%M') + ': ' + command)
-
-                if username != masterUser and chatId != masterChatId:
-                    SendMsg(accessErrorMsg)
-                    continue
+                    UserName = str(ChatId)
                     
-                # Answering simple commands / Отвечаем на простые команды
-                if command == 'work' or command == '/work':
-                    standardCommand = True
-                    # SendPicAnim('https://i.imgur.com/UW2gs2C.mp4')
-                    SendMsg(workTestMsg)
+                if ChatId != MasterChatId:
+                    SendMsg(AccessErrorAnswer, '')
+                else: 
+                    ResponseUserMessage = Data['result'][0]['message']['text']
+                    # Answering simple UserMessages / Отвечаем на простые команды
+                    if ResponseUserMessage == 'work' or ResponseUserMessage == '/work': 
+                        # SendMsg(WorkTestAnswer, 'https://i.imgur.com/UW2gs2C.mp4')
+                        SendMsg(WorkTestAnswer, '')
+                    else:
+                        # We only add messages from the master user / Складываем только сообщения мастер-пользователя
+                        if UserMessage and UserMessage[-1] not in '.?':
+                            UserMessage += '. ' + ResponseUserMessage
+                        else:
+                            UserMessage += ResponseUserMessage
+                        
+                if ShowMsgs:
+                    print(str(ChatId) + ', ' + UserName + ', ' + CurrentDateTime.strftime('%H:%M') + ': ' + UserMessage)
+                    
+                if UserMessage == 'work' or UserMessage == '/work': 
+                    UserMessage = ''
+
+                MessagesCounter += 1
+                if len(Data['result']) == 0 or MessagesCounter > 3:
+                    break
+                    
+            # If the user sent something . Если пользователь прислал что-то
+            if UserMessage != '': 
                 
-                if standardCommand == False:
-                    if addPromtToNextUserMsg != '':
-                        command += addPromtToNextUserMsg
-                        addPromtToNextUserMsg = ''
+                if AddPromptToNextUserMsg != '':
+                    UserMessage += AddPromptToNextUserMsg
+                    AddPromptToNextUserMsg = ''
+                
+                messages.append({'role': 'user', 'content': UserMessage})
+                
+                # Checking the importance of a user's message / Проверка важности сообщения пользователя
+                ImportanceCheck(AIProvider, HistoryUserPrompt, messages, UserMessage, True)
+                
+                if sum(len(msg['content']) for msg in messages) > TokensSize - 50:
+                    messages.pop(2)
+                    messages.pop(3)
                     
-                    messages.append({'role': 'user', 'content': command})
-                    
-                    # Checking the importance of a user's message / Проверка важности сообщения пользователя
-                    ImportanceCheck(aiProvider, HistoryUserPrompt, messages, command, True)
-                    
-                    if sum(len(msg['content']) for msg in messages) > tokenSize - 50:
-                        messages.pop(2)
-                        messages.pop(3)
+                # Need an answer? / Нужно ли отвечать?
+                NeedAnAnswer = ResponseNeed(AIProvider, messages, ResponseNeedPromt)
+                if (ShowMsgs):
+                    if NeedAnAnswer:
+                        print('Answer required.')
+                    else:
+                        print('No answer required.')
+                        
+                # If an answer is needed / Если ответ нужен  
+                if NeedAnAnswer:
           
                     # AI answer / Ответ AI
-                    msg = AIResponce(messages, aiProvider)
+                    BotMessage = AIResponse(AIProvider, messages)
                     
-                    if msg != '':
-                        SendMsg(msg)
+                    if BotMessage != '':
+                        SendMsg(BotMessage, '')
                         
                         # AI Response Importance Check / Проверка важности ответа AI
-                        ImportanceCheck(aiProvider, HistoryAIPrompt, messages, msg, False)
+                        ImportanceCheck(AIProvider, HistoryAIPrompt, messages, BotMessage, False)
                         
-                        messages.append({'role': 'assistant', 'content': msg})
-                    elif debugMode == 1:
+                        messages.append({'role': 'assistant', 'content': BotMessage})
+                    elif DebugMode:
                         print('Error receiving data from AI')
 
-                #print(messages)
-              
+            #print(messages)
+            
             for trigger in triggers:
-                if currentDateTime.day != trigger.completed: # Раз в день
-                    #print('day trigger ' + trigger.ai_request)
-                    #print('day trigger ' + str(trigger.hours) + ':' + str(trigger.minutes), currentDateTime.hour)
-                    if ((currentDateTime.hour > trigger.hours) or (currentDateTime.hour == trigger.hours and currentDateTime.minute >= trigger.minutes)):
+                if CurrentDateTime.day != trigger.LastShownDay: # Once a day / Раз в день
+                    #print('day trigger ' + trigger.AIRequest)
+                    #print('day trigger ' + str(trigger.Hours) + ':' + str(trigger.Minutes), CurrentDateTime.hour)
+                    if ((CurrentDateTime.hour > trigger.Hours) or (CurrentDateTime.hour == trigger.Hours and CurrentDateTime.minute >= trigger.Minutes)):
                         
-                        if showMsgs == 1:
-                            print('Trigger done: ' + trigger.ai_request)
-                        trigger.completed = currentDateTime.day
-                        saveDateTriggers(triggers)
+                        if ShowMsgs:
+                            print('Trigger done: ' + trigger.AIRequest)
+                        trigger.LastShownDay = CurrentDateTime.day
+                        SaveDateTriggers(triggers)
                         
                         # Add predict to the next message / Добавляем predict на следующее сообщение
-                        if trigger.add_promt_next_user_msg != '':
-                            addPromtToNextUserMsg = trigger.add_promt_next_user_msg
+                        if trigger.AddPromptNextUserMsg != '':
+                            AddPromptToNextUserMsg = trigger.AddPromptNextUserMsg
                         
-                        # If no messages have been received, then write down and update chatId to masterChatId so that you know where to send messages
-                        # Если сообщений не поступало, то записываем обновляем chatId на masterChatId, чтобы знать куда отправлять сообщения
-                        chatId = masterChatId
+                        # If no messages have been received, then write down and update ChatId to MasterChatId so that you know where to send messages
+                        # Если сообщений не поступало, то записываем обновляем ChatId на MasterChatId, чтобы знать куда отправлять сообщения
+                        ChatId = MasterChatId
                         
-                        messages.append({'role': 'user', 'content': randomPhrase(trigger.ai_request)})
+                        messages.append({'role': 'user', 'content': RandomPhrase(trigger.AIRequest)})
                         
-                        if debugMode == 1:
+                        if DebugMode:
                             print(messages[1:])
-                        msg = AIResponce(messages, aiProvider)
+                        BotMessage = AIResponse(AIProvider, messages)
                         
-                        if msg == '' and trigger.answer_without_ai != '':
-                            msg = randomPhrase(trigger.answer_without_ai)
+                        # Some triggers may not have AnswerWithoutAI / Некоторые триггеры могут быть без AnswerWithoutAI
+                        if BotMessage == '' and trigger.AnswerWithoutAI != '': 
+                            BotMessage = RandomPhrase(trigger.AnswerWithoutAI)
                         
-                        if sendImgs == 1 and trigger.pics != '':
-                            SendPicAnim(randomPhrase(trigger.pics))
-                          
-                        # Some triggers may not have answer_without_ai / Некоторые триггеры могут быть без answer_without_ai
-                        if msg != '':
-                            SendMsg(msg)
-                            messages.append({'role': 'assistant', 'content': msg})
+                        if SendImgs and trigger.Pics != '':
+                            SendMsg(BotMessage, RandomPhrase(trigger.Pics))
+                        elif BotMessage != '':
+                            SendMsg(BotMessage, '')
+                        
+                        messages.append({'role': 'assistant', 'content': BotMessage})
                         
 
         except:
-            if debugMode == 1:
+            if DebugMode:
                 print('Update fail')
             pass
 

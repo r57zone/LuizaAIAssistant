@@ -1,4 +1,0 @@
-If the message contains important information about the interlocutor, such as their tastes, views, favorite games, movies, music, paintings, places they've been, where they've traveled, vacationed, or whom they've met, return:
-True: <brief description of important information>
-If the information is insignificant, return:
-False.

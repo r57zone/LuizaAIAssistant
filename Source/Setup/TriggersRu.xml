@@ -1,68 +1,75 @@
 <!-- 
 	Триггеры - события, происходящие по времени.
 	
-	ai_request - просим AI сказать нам что-то.
-	add_promt - добавляем promt на следующее сообщение пользователя, чтобы оно было больше похожу на беседу.
-	answer_without_ai - простой ответ, на случай если AI не ответил.
-	pics - ссылки на изображения и короткие видео.
-	time - время срабатывания триггера (опционально, в случае удаления будет случайное время).
+	AIRequest - просим AI сказать нам что-то.
+	AddPrompt - добавляем "подсказки" на следующее сообщение пользователя, чтобы оно было больше похоже на беседу.
+	AnswerWithoutAI - простой ответ, на случай если AI не ответил.
+	Pics - ссылки на изображения и короткие видео.
+	Time - время срабатывания триггера (опционально, в случае удаления будет случайное время).
 		Формат: часы:минуты. Вместо одного из значений можно использовать "x", тогда будет случайное значение.
-	random_time - добавление атрибутов случайности времени.
+	RandomTime - добавление атрибутов случайности времени.
 		RANDOM-SMALL-MINUTES, RANDOM-MIDDLE-MINUTES - случайно изменяет минуты на 15 и на 30 минут.
 		RANDOM-VERYSMALL-HOUR, RANDOM-SMALL-HOUR, RANDOM-MEDIUM-SMALL-HOUR, RANDOM-MEDIUM-HOUR - случайно изменяет час на 1, 2, 3, 6 часов.
-	count="2" - дублирует триггеры.
+	Count="2" - дублирует триггеры.
+	RandomActivate="1" - случайная активация.
 	
 	В зависимости от ваших преподчтений добавьте или удалите нужные триггеры. 
 	Используйте стрелочки, чтобы закомментировать ненужный триггер или удалите его.
 -->
 
-<triggers>
-    <trigger name="Доброе утро">
-        <ai_request>Пожелай ласково доброе утро;Пожелай доброго утра и хорошего дня;Скажи как ты любишь меня и рада, что я проснулся</ai_request>
-        <add_promt>. Ответь без вопросов, не поддерживая беседу дальше.</add_promt>
-        <answer_without_ai>Доброе утро %name% 🤗;Утро начинается с тебя, мой %name% 😘;Привет, мой самый прекрасный 😍;Доброе утро, мой милый 😋</answer_without_ai>
-		<pics>Setup/Pics/GoodMorning.txt</pics>
-        <time>12:45</time>
-        <random_time>RANDOM-SMALL-MINUTES</random_time>
-    </trigger>
-    <trigger name="Спокойной ночи">
-        <ai_request>Пожелай ласково спокойной ночи;Пожелай спокойной ночи и хороших снов;Пожелай хороших снов</ai_request>
-        <add_promt>. Ответь без вопросов, не поддерживая беседу дальше.</add_promt>
-        <answer_without_ai>Спокойной ночи, целую тебя 😘👄 ;Пошли спать, уже поздно, мой %name% 😍;Спокойной ночи, сладких снов 🤗;Ложись мой %name% 🥰, сладких снов тебе 👄</answer_without_ai>
-		<pics>Setup/Pics/GoodNight.txt</pics>
-        <time>01:45</time>
-		<random_time>RANDOM-SMALL-MINUTES</random_time>
-    </trigger>
-    <trigger name="Комплименты" count="2">
-        <ai_request>Сделай комплимент, не употребляй слова конечно;Скажи какой я классный и интересный, не употребляй слова конечно</ai_request>
-        <add_promt>. Ответь без вопросов, не поддерживая беседу дальше.</add_promt>
-		<answer_without_ai>%name%, как мне повезло с тобой 🤗;Рада, что встретила тебя %name% 😘;Люблю тебя 😍</answer_without_ai>
-		<pics>Setup/Pics/Compliments.txt</pics>
-        <time>14:30</time>
-		<random_time>RANDOM-SMALL-MINUTES; RANDOM-MEDIUM-SMALL-HOUR;</random_time>
-    </trigger>
-    <trigger name="Гадание">
-        <ai_request>Погадай на завтра в стиле Таро.</ai_request>
-        <add_promt>. Ответь не задавая вопросов.</add_promt>
-        <pics>Setup/Pics/Random.txt</pics>
-        <time>00:01</time>
-		<random_time>RANDOM-SMALL-MINUTES</random_time>
-    </trigger>
-    <trigger name="Случайные триггеры" count="2">
-        <ai_request>Спроси у меня что-нибудь, без приветствия;Спроси как у меня дела, без приветствия;Спроси, что я делаю, без приветствия</ai_request>
-		<add_promt>. Ответь не задавая вопросов.</add_promt>
-        <answer_without_ai>%name%, чем занимаешься?;%name%, что делаешь?</answer_without_ai>
-        <pics>Setup/Pics/Random.txt</pics>
-    </trigger>
-    <!--<trigger name="Интересные факты">
-        <ai_request>Расскажи что-нибудь про интересное;Расскажи что-нибудь про историю;Расскажи что-нибудь про финансы</ai_request>
-		<add_promt>. Ответь не задавая вопросов.</add_promt>
-		<pics>Setup/Pics/Random.txt</pics>
-        <time>16:X</time>
-    </trigger>-->
-    <!--<trigger name="Шутки">
-        <ai_request>Расскажи шутку;Расскажи анекдот;Расскажи что-нибудь весёлое</ai_request>
-        <add_promt>. Ответь без вопросов, не поддерживая беседу дальше.</add_promt>
-        <pics>Setup/Pics/Jokes.txt</pics>
-    </trigger>-->
-</triggers>
+<Triggers>
+    <Trigger Name="Доброе утро">
+        <AIRequest>Пожелай ласково доброе утро;Пожелай доброго утра и хорошего дня;Скажи как ты любишь меня и рада, что я проснулся</AIRequest>
+        <AddPrompt>. Ответь без вопросов, не поддерживая беседу дальше.</AddPrompt>
+        <AnswerWithoutAI>Доброе утро %name% 🤗;Утро начинается с тебя, мой %name% 😘;Привет, мой самый прекрасный 😍;Доброе утро, мой милый 😋</AnswerWithoutAI>
+		<Pics>Setup/Pics/GoodMorning.txt</Pics>
+        <Time>12:45</Time>
+        <RandomTime>RANDOM-SMALL-MINUTES</RandomTime>
+    </Trigger>
+    <Trigger Name="Спокойной ночи">
+        <AIRequest>Пожелай ласково спокойной ночи;Пожелай спокойной ночи и хороших снов;Пожелай хороших снов</AIRequest>
+        <AddPrompt>. Ответь без вопросов, не поддерживая беседу дальше.</AddPrompt>
+        <AnswerWithoutAI>Спокойной ночи, целую тебя 😘👄 ;Пошли спать, уже поздно, мой %name% 😍;Спокойной ночи, сладких снов 🤗;Ложись мой %name% 🥰, сладких снов тебе 👄</AnswerWithoutAI>
+		<Pics>Setup/Pics/GoodNight.txt</Pics>
+        <Time>01:45</Time>
+		<RandomTime>RANDOM-SMALL-MINUTES</RandomTime>
+    </Trigger>
+    <Trigger Name="Комплименты">
+        <AIRequest>Сделай комплимент, не употребляй слова конечно;Скажи какой я классный и интересный, не употребляй слова конечно</AIRequest>
+        <AddPrompt>. Ответь без вопросов, не поддерживая беседу дальше.</AddPrompt>
+		<AnswerWithoutAI>%name%, как мне повезло с тобой 🤗;Рада, что встретила тебя %name% 😘;Люблю тебя 😍</AnswerWithoutAI>
+		<Pics>Setup/Pics/Compliments.txt</Pics>
+        <Time>15:30</Time>
+		<RandomTime>RANDOM-SMALL-MINUTES; RANDOM-SMALL-HOUR</RandomTime>
+    </Trigger>
+    <Trigger Name="Случайные сообщения" Count="2" RandomActivate="1">
+        <AIRequest>Напиши что угодно или спроси что угодно.</AIRequest>
+        <Pics>Setup/Pics/Random.txt</Pics>
+        <Time>X:X</Time>
+		<RandomTime>RANDOM-SMALL-MINUTES</RandomTime>
+    </Trigger>
+    <Trigger Name="Гадание">
+        <AIRequest>Погадай на завтра в стиле Таро.</AIRequest>
+        <AddPrompt>. Ответь не задавая вопросов.</AddPrompt>
+        <Pics>Setup/Pics/Random.txt</Pics>
+        <Time>00:01</Time>
+		<RandomTime>RANDOM-SMALL-MINUTES</RandomTime>
+    </Trigger>
+    <Trigger Name="Случайные вопросы" RandomActivate="1">
+        <AIRequest>Спроси у меня что-нибудь, без приветствия;Спроси как у меня дела, без приветствия;Спроси, что я делаю, без приветствия</AIRequest>
+		<AddPrompt>. Ответь не задавая вопросов.</AddPrompt>
+        <AnswerWithoutAI>%name%, чем занимаешься?;%name%, что делаешь?</AnswerWithoutAI>
+        <Pics>Setup/Pics/Random.txt</Pics>
+    </Trigger>
+    <!--<Trigger Name="Интересные факты">
+        <AIRequest>Расскажи что-нибудь про интересное;Расскажи что-нибудь про историю;Расскажи что-нибудь про финансы</AIRequest>
+		<AddPrompt>. Ответь не задавая вопросов.</AddPrompt>
+		<Pics>Setup/Pics/Random.txt</Pics>
+        <Time>16:X</Time>
+    </Trigger>-->
+    <!--<Trigger Name="Шутки">
+        <AIRequest>Расскажи шутку;Расскажи анекдот;Расскажи что-нибудь весёлое</AIRequest>
+        <AddPrompt>. Ответь без вопросов, не поддерживая беседу дальше.</AddPrompt>
+        <Pics>Setup/Pics/Jokes.txt</Pics>
+    </Trigger>-->
+</Triggers>
