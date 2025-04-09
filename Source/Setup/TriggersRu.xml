@@ -88,4 +88,25 @@
         <Time>22:X</Time>
 		<RandomTime>RANDOM-SMALL-HOUR</RandomTime>
     </Trigger>
+    <!--<Trigger Name="Счетчик воды">
+        <AIRequest>Напомни мне передать показания счетчика воды.</AIRequest>
+		<Pics>Setup/Pics/Random.txt</Pics>
+        <Date>23.0</Date>
+        <Time>14:00</Time>
+		<RandomTime>RANDOM-SMALL-MINUTES</RandomTime>
+    </Trigger>
+    <Trigger Name="Счетчик газа">
+        <AIRequest>Напомни мне передать показания газа.</AIRequest>
+		<Pics>Setup/Pics/Random.txt</Pics>
+        <Date>24.0</Date>
+        <Time>14:00</Time>
+		<RandomTime>RANDOM-SMALL-MINUTES</RandomTime>
+    </Trigger>
+    <Trigger Name="Оплата ЖКХ">
+        <AIRequest>Напомни мне оплатить услуги ЖКХ.</AIRequest>
+		<Pics>Setup/Pics/Random.txt</Pics>
+        <Date>04.0</Date>
+        <Time>14:00</Time>
+		<RandomTime>RANDOM-SMALL-MINUTES</RandomTime>
+    </Trigger>-->
 </Triggers>
