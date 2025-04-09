@@ -54,11 +54,11 @@ def GroqResponce(messages):
                 return message_content
             else:
                 #print('No choices in the response.')
-                return ''
+                return 'AI provider returned an error.'
         else:
             #print('Failed to fetch data:', response.status_code)
             #print(response.text)
-            return ''
+            return 'AI provider returned an error.'
     except Exception as e:
         #print('An error occurred:', e)
         return 'AI provider returned an error.'
@@ -172,6 +172,8 @@ class Trigger:
     def __init__(self):
         self.Name = ''
         self.Activate = True
+        self.Day = 0
+        self.Month = 0
         self.LastShownDay = 0
         self.Hours = 0
         self.Minutes = 0
@@ -179,6 +181,14 @@ class Trigger:
         self.AIRequest = ''
         self.AddPromptNextUserMsg = ''
         self.Pics = []
+        
+    def setDate(self, date):
+        if '.' not in date:
+            self.Day = int(date)
+        else:
+            split_date = date.split('.')
+            self.Day = int(split_date[0])
+            self.Month = int(split_date[1])
         
     def setTime(self, time):
         if time != 'X':
@@ -195,7 +205,7 @@ class Trigger:
         else:
             self.Hours = random.randint(0, 23)
             self.Minutes = random.randint(0, 59)
-            
+   
     def randTime(self, values):
         if 'RANDOM-SMALL-MINUTES' in values:
             self.Minutes = max(0, min(59, self.Minutes + random.randint(-15, 15)))
@@ -244,6 +254,10 @@ def LoadTriggers(filename):
             
             # Images / Изображения
             trigger.Pics = LoadFileList(trigger_elem.find('Pics').text)
+            
+            date_elem = trigger_elem.find('Date')
+            if date_elem is not None and date_elem.text:
+                trigger.setDate(date_elem.text)
             
             # Time
             time_elem = trigger_elem.find('Time')
@@ -392,7 +406,7 @@ def main():
     # Checking triggers / Проверка триггеров
     if False:
         for trigger in triggers:
-            print(trigger.Name, '(' + str(trigger.Activate) + ')', '-', str(trigger.Hours) + ':' + str(trigger.Minutes))
+            print(trigger.Name, '(' + str(trigger.Activate) + ')', '-', str(trigger.Hours) + ':' + str(trigger.Minutes), str(trigger.Day) + '.' + str(trigger.Month))
             print('Last Shown Day: ' + str(trigger.LastShownDay))
             print('AI request:', trigger.AIRequest.split(';')[0])
             print('Answer without AI:', trigger.AnswerWithoutAI.split(';')[0])
@@ -410,7 +424,11 @@ def main():
         pass
         
     def SendMsg(Msg, Link):
-        if Link == '':
+        #print('MSG', Link, Msg)
+        if len(Msg) > 4096:
+            Msg = Msg[:4093] + '...'
+
+        if Link == '' or len(Msg) > 1024:
             HTTPGet('https://api.telegram.org/bot' + TelegramToken + '/sendmessage?chat_id=' + str(ChatId) + '&text=' + urllib.parse.quote(Msg) + '&parse_mode=markdown')
         else:
             HTTPGet('https://api.telegram.org/bot' + TelegramToken + '/sendanimation?chat_id=' + str(ChatId) + '&animation=' + urllib.parse.quote(Link) + '&caption=' + urllib.parse.quote(Msg))
@@ -524,8 +542,14 @@ def main():
                 if CurrentDateTime.day != trigger.LastShownDay: # Once a day / Раз в день
                     #print('day trigger ' + trigger.AIRequest)
                     #print('day trigger ' + str(trigger.Hours) + ':' + str(trigger.Minutes), CurrentDateTime.hour)
-                    if ((CurrentDateTime.hour > trigger.Hours) or (CurrentDateTime.hour == trigger.Hours and CurrentDateTime.minute >= trigger.Minutes)):
-                        
+                    
+                    if (
+                        (trigger.Day == 0 or CurrentDateTime.day == trigger.Day) and
+                        (trigger.Month == 0 or CurrentDateTime.month == trigger.Month) and
+                        (CurrentDateTime.hour > trigger.Hours or
+                        (CurrentDateTime.hour == trigger.Hours and CurrentDateTime.minute >= trigger.Minutes))
+                    ):
+
                         if ShowMsgs:
                             print('Trigger done: ' + trigger.AIRequest)
                         trigger.LastShownDay = CurrentDateTime.day

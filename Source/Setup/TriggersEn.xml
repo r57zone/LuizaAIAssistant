@@ -5,6 +5,8 @@
 	AddPrompt - add prompt to the user's next message to make it more like a conversation.
 	AnswerWithoutAI - simple answer, in case the AI didn't answer.
 	Pics - links to images and short videos.
+	Date – the day and month when the trigger should activate (optional).
+		Format: day.month (e.g., 25.01). You can use "0" instead of either value to make the trigger activate only on a specific month or day.
 	Time - Trigger Time (optional, in case of deletion it will be a random Time).
 		Format: hour:minutes. You can use "x" instead of one of the values, then it will be a random value.
 	RandomTime - Adding Time randomness attributes.
@@ -71,5 +73,26 @@
         <AIRequest>Tell a joke;Tell something funny.</AIRequest>
         <AddPrompt>. Answer without question, without keeping the conversation going any further.</AddPrompt>
         <Pics>Setup/Pics/Jokes.txt</Pics>
+    </Trigger>-->
+    <Trigger Name="Birthday">
+        <AIRequest>Wish me a happy birthday.</AIRequest>
+		<Pics>Setup/Pics/Compliments.txt</Pics>
+        <Date>28.10</Date>
+        <Time>14:X</Time>
+		<RandomTime>RANDOM-SMALL-HOUR</RandomTime>
+    </Trigger>
+    <Trigger Name="Merry Christmas">
+        <AIRequest>Wish me a Merry Christmas.</AIRequest>
+		<Pics>Setup/Pics/Compliments.txt</Pics>
+        <Date>25.12</Date>
+        <Time>14:X</Time>
+		<RandomTime>RANDOM-SMALL-HOUR</RandomTime>
+    </Trigger>
+    <!--<Trigger Name="New Year">
+        <AIRequest>Wish me a Happy New Year.</AIRequest>
+		<Pics>Setup/Pics/Compliments.txt</Pics>
+        <Date>31.12</Date>
+        <Time>22:X</Time>
+		<RandomTime>RANDOM-SMALL-HOUR</RandomTime>
     </Trigger>-->
 </Triggers>
