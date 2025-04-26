@@ -54,14 +54,14 @@ def GroqResponce(messages):
                 return message_content
             else:
                 #print('No choices in the response.')
-                return 'AI provider returned an error.'
+                return ''
         else:
             #print('Failed to fetch data:', response.status_code)
             #print(response.text)
-            return 'AI provider returned an error.'
+            return ''
     except Exception as e:
         #print('An error occurred:', e)
-        return 'AI provider returned an error.'
+        return ''
         
 def GPTResponce(messages):
     try:
@@ -70,7 +70,7 @@ def GPTResponce(messages):
         #print(response['choices'][0]['message']['content'])
         return response['choices'][0]['message']['content']
     except:
-        return 'AI provider returned an error.'
+        return ''
         
 def AIResponse(AIProvider, messages):
     if AIProvider == 0:
@@ -577,8 +577,11 @@ def main():
                             SendMsg(BotMessage, RandomPhrase(trigger.Pics))
                         elif BotMessage != '':
                             SendMsg(BotMessage, '')
+                        else:
+                            SendMsg('AI provider returned an error.', '')
                         
-                        messages.append({'role': 'assistant', 'content': BotMessage})
+                        if BotMessage != '':
+                            messages.append({'role': 'assistant', 'content': BotMessage})
                         
 
         except:

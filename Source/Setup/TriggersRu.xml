@@ -88,8 +88,9 @@
         <Time>22:X</Time>
 		<RandomTime>RANDOM-SMALL-HOUR</RandomTime>
     </Trigger>
-    <!--<Trigger Name="Счетчик воды">
-        <AIRequest>Напомни мне передать показания счетчика воды.</AIRequest>
+    <!--<Trigger Name="Счетчики воды">
+        <AIRequest>Напомни мне передать показания счётчиков воды.</AIRequest>
+		<AnswerWithoutAI>%name%, не забудь передать показания воды.;%name%, сегодня надо отправить показания счётчиков воды, не забудь.;%name%, сегодня день отправки показаний воды.</AnswerWithoutAI>
 		<Pics>Setup/Pics/Random.txt</Pics>
         <Date>23.0</Date>
         <Time>14:00</Time>
@@ -97,6 +98,7 @@
     </Trigger>
     <Trigger Name="Счетчик газа">
         <AIRequest>Напомни мне передать показания газа.</AIRequest>
+		<AnswerWithoutAI>%name%, не забудь передать показания газа.;%name%, сегодня надо отправить показания счётчика газа, не забудь.;%name%, сегодня день отправки показаний газа.</AnswerWithoutAI>
 		<Pics>Setup/Pics/Random.txt</Pics>
         <Date>24.0</Date>
         <Time>14:00</Time>
@@ -104,6 +106,7 @@
     </Trigger>
     <Trigger Name="Оплата ЖКХ">
         <AIRequest>Напомни мне оплатить услуги ЖКХ.</AIRequest>
+		<AnswerWithoutAI>%name%, не забудь сегодня оплатить коммуналку.;%name%, я тут вспомнила, сегодня надо оплатить квартиру.;%name%, не забудь про оплату коммуналки.</AnswerWithoutAI>
 		<Pics>Setup/Pics/Random.txt</Pics>
         <Date>04.0</Date>
         <Time>14:00</Time>
