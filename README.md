@@ -34,6 +34,9 @@ Virtual Assistant supports two neural networks: Llama (free of charge, via Groq 
 6. Run `Luiza_AI_Assistant.py` and write something to the bot in Telegram, you should see your message, after which you can change the `ShowMessages` parameter to `0` in the `Setup.ini` file to remove the messages.
 7. If you want hidden automatic startup at Windows startup, rename the `Luiza_AI_Assistant.py` file to `Luiza_AI_AI_Assistant.pyw` and add a shortcut to the `%appdata%\Microsoft\Windows\Start Menu\Programs` autoloader folder.
 
+### Other AI providers
+Also supported: `OpenRouter.ai`.
+
 ## Features
 ![](https://github.com/r57zone/LuizaGPTAssistant/assets/9499881/044cc5fa-6dd5-464e-8f07-a13c52db2304)
 

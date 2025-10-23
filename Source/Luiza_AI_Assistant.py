@@ -10,6 +10,7 @@ import locale
 # pip install requests[socks] (for proxy / для прокси)
 
 GroqAPIKey = '' 
+OpenRouterAPIKey = '' 
 Proxy = '';
 UserHistory = ''
 AIHistory = ''
@@ -63,6 +64,45 @@ def GroqResponce(messages):
         #print('An error occurred:', e)
         return ''
         
+def OpenRouterResponce(messages):
+    if Proxy:
+            proxies = {
+                'http': Proxy,
+                'https': Proxy
+            }
+    
+    headers = {
+        'Authorization': 'Bearer ' + OpenRouterAPIKey,
+        'Content-Type': 'application/json'
+    }
+    data = {
+        "model": "openai/gpt-oss-20b",  # Model name
+        "messages": messages,
+        "temperature": 0.5
+    }
+
+    try:
+        if Proxy:
+            response = requests.post('https://openrouter.ai/api/v1/chat/completions', json=data, headers=headers, proxies=proxies)
+        else:
+            response = requests.post('https://openrouter.ai/api/v1/chat/completions', json=data, headers=headers)
+        if response.status_code == 200:
+            response_data = response.json()
+            if 'choices' in response_data and len(response_data['choices']) > 0:
+                message_content = response_data['choices'][0]['message']['content']
+                #print(message_content)
+                return message_content
+            else:
+                #print('No choices in the response.')
+                return ''
+        else:
+            #print('Failed to fetch data:', response.status_code)
+            #print(response.text)
+            return ''
+    except Exception as e:
+        #print('An error occurred:', e)
+        return ''
+        
 def GPTResponce(messages):
     try:
         response = openai.ChatCompletion.create(model='gpt-4', messages=messages)
@@ -77,6 +117,8 @@ def AIResponse(AIProvider, messages):
         return GPTResponce(messages)
     elif AIProvider == 1:
         return GroqResponce(messages)
+    elif AIProvider == 2:
+        return OpenRouterResponce(messages)
         
 def SaveHistory():
     #print('Save history')
@@ -324,9 +366,10 @@ def main():
     TelegramToken = Config.get('Main', 'TelegramToken')
     MasterChatId = int(Config.get('Main', 'TelegramMasterChatId'))
     
-    global GroqAPIKey, Proxy
+    global Proxy, GroqAPIKey, OpenRouterAPIKey
     FirstRun = int(Config.get('Main', 'FirstRun')) == 1
     GroqAPIKey = Config.get('Main', 'GroqAPIKey')
+    OpenRouterAPIKey = Config.get('Main', 'OpenRouterAPIKey')
     openai.api_key = Config.get('Main', 'OpenAPIKey')
     TokensSize = int(Config.get('Main', 'HistoryLimit'))
     Proxy = Config.get('Main', 'Proxy')

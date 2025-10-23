@@ -36,6 +36,9 @@
 7. Запустите `Luiza_AI_Assistant.py` и напишите что-нибудь боту в Telegram, вы должно увидеть своё сообщение, после чего можно изменить параметр `ShowMessages` на `0` в файле `Setup.ini`, чтобы убрать вывод сообщений.
 8. При необходимости скрытого автоматического запуска при старте Windows, переименуйте файл `Luiza_AI_Assistant.py` в `Luiza_AI_Assistant.pyw` и добавьте ярлык в папку автозагрузки `%appdata%\Microsoft\Windows\Start Menu\Programs`.
 
+### Другие AI провайдеры
+Также поддерживается: `OpenRouter.ai`.
+
 ## Особенности
 ![](https://github.com/r57zone/LuizaGPTAssistant/assets/9499881/044cc5fa-6dd5-464e-8f07-a13c52db2304)
 
